@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { posts } from "@/lib/posts";
+import { fetchPostById } from "@/lib/posts";
+import DeletePostButton from "./_components/DeletePostButton";
 
 type PostDetailPageProps = {
 	params: Promise<{ id: string }>;
@@ -7,7 +8,20 @@ type PostDetailPageProps = {
 
 export default async function PostDetailPage({ params }: PostDetailPageProps) {
 	const { id } = await params;
-	const post = posts.find((item) => item.id === Number(id));
+	const numericId = Number(id);
+
+	if (!Number.isFinite(numericId)) {
+		return (
+			<section className="max-w-2xl mx-auto text-center">
+				<h1 className="text-2xl font-bold text-red-600">잘못된 게시글 주소입니다</h1>
+				<Link href="/posts" className="mt-4 inline-block text-blue-600 hover:underline">
+					← 목록으로 돌아가기
+				</Link>
+			</section>
+		);
+	}
+
+	const post = await fetchPostById(numericId);
 
 	if (!post) {
 		return (
@@ -28,9 +42,12 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 			</p>
 			<p className="mt-6 leading-7 text-gray-800">{post.content}</p>
 
-			<Link href="/posts" className="mt-8 inline-block text-blue-600 hover:underline">
-				← 목록으로 돌아가기
-			</Link>
+			<div className="mt-8 flex items-center gap-3">
+				<Link href="/posts" className="inline-block text-blue-600 hover:underline">
+					← 목록으로 돌아가기
+				</Link>
+				<DeletePostButton postId={post.id} />
+			</div>
 		</article>
 	);
 }

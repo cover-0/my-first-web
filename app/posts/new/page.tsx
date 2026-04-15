@@ -2,17 +2,39 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createPost } from "@/lib/posts";
 
 export default function NewPostPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [titleError, setTitleError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    alert("저장되었습니다");
-    router.push("/posts");
+    if (!title.trim()) {
+      setTitleError("제목은 비어 있을 수 없습니다.");
+      return;
+    }
+
+    setTitleError("");
+    setIsSubmitting(true);
+
+    try {
+      await createPost({
+        title: title.trim(),
+        content: content.trim(),
+      });
+      alert("저장되었습니다.");
+      router.push("/posts");
+      router.refresh();
+    } catch {
+      alert("저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -28,11 +50,16 @@ export default function NewPostPage() {
             id="title"
             type="text"
             value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            required
+            onChange={(event) => {
+              setTitle(event.target.value);
+              if (event.target.value.trim()) {
+                setTitleError("");
+              }
+            }}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 outline-none ring-0 focus:border-gray-500"
             placeholder="제목을 입력하세요"
           />
+          {titleError ? <p className="mt-2 text-sm text-red-600">{titleError}</p> : null}
         </div>
 
         <div>
@@ -52,9 +79,10 @@ export default function NewPostPage() {
 
         <button
           type="submit"
-          className="inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700"
+          disabled={!title.trim() || isSubmitting}
+          className="inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-400"
         >
-          저장
+          {isSubmitting ? "저장 중..." : "저장"}
         </button>
       </form>
     </section>
