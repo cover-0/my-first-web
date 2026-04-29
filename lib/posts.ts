@@ -82,6 +82,30 @@ export async function createPost(input: Pick<Post, "title" | "content">): Promis
   return mapJsonPostToPost(data);
 }
 
+// JSONPlaceholder는 수정 응답만 반환하며 실제 데이터는 변경되지 않는다.
+export async function updatePost(
+  id: number,
+  input: Pick<Post, "title" | "content">
+): Promise<Post> {
+  const response = await fetch(`${JSON_PLACEHOLDER_BASE_URL}/posts/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+    body: JSON.stringify({
+      title: input.title,
+      body: input.content,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("게시글 수정에 실패했습니다.");
+  }
+
+  const data = (await response.json()) as JsonPlaceholderPost;
+  return mapJsonPostToPost(data);
+}
+
 // JSONPlaceholder는 delete 응답만 반환하며 실제 데이터는 삭제되지 않는다.
 export async function deletePost(id: number): Promise<boolean> {
   const response = await fetch(`${JSON_PLACEHOLDER_BASE_URL}/posts/${id}`, {

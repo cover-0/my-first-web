@@ -1,19 +1,6 @@
-AGENT.md를 참조한다.
+AGENTS.md를 참조한다.
 
 # Copilot Instructions
-
-## Tech Stack
-- Next.js 16.2.1 (App Router ONLY)
-- Tailwind CSS ^4
-
-## Coding Conventions
-- 기본은 Server Component로 작성한다.
-- 스타일링은 Tailwind CSS만 사용한다.
-
-## Known AI Mistakes
-- next/router는 사용 금지, 반드시 next/navigation을 사용한다.
-- Pages Router는 사용 금지한다.
-- params는 반드시 await 해서 사용한다.
 
 ## Tech Stack
 
@@ -22,19 +9,12 @@ AGENT.md를 참조한다.
 - Tailwind CSS 4
 - shadcn/ui (components/ui/ 경로에 설치됨)
 
-## Coding Conventions
+## Coding Conventions   
 
 - Default to Server Components unless a Client Component is required.
 - Use Tailwind CSS for styling.
 - Keep components simple and easy to verify.
 - Prefer files inside `app/` for routes.
-
-
-## Known AI Mistakes
-
-- Do not use `next/router`; use `next/navigation` when navigation is needed.
-- Do not create `pages/` router files; this project uses the App Router.
-- Do not add `"use client"` unless interactivity or browser APIs are actually needed.
 
 ## Design Tokens
 
@@ -51,3 +31,9 @@ AGENT.md를 참조한다.
 - Button, Card, Input, Dialog 등 shadcn/ui 컴포넌트 우선
 - 커스텀 컴포넌트는 components/ 루트에 배치
 - Tailwind 기본 컬러 직접 사용 금지 → CSS 변수(디자인 토큰) 사용
+
+## Known AI Mistakes
+
+- Do not use `next/router`; use `next/navigation` when navigation is needed.
+- Do not create `pages/` router files; this project uses the App Router.
+- Do not add `"use client"` unless interactivity or browser APIs are actually needed.

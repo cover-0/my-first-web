@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Post } from "@/lib/posts";
+import { Button } from "@/components/ui/button";
 import { deletePost } from "@/lib/posts";
 
 type DeletePostButtonProps = {
@@ -41,13 +42,8 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleDelete}
-      disabled={isDeleting}
-      className="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:cursor-not-allowed disabled:bg-red-300"
-    >
+    <Button type="button" variant="destructive" onClick={handleDelete} disabled={isDeleting}>
       {isDeleting ? "삭제 중..." : "삭제"}
-    </button>
+    </Button>
   );
 }
