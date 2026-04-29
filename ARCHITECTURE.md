@@ -100,8 +100,30 @@
 
 ## 컴포넌트 구조
 
-- TODO: 추가 예정
+- **페이지 레이아웃 (`app/layout.tsx`)**
+  - 헤더 (네비게이션 링크, 로고, 프로필 등)
+  - 메인 콘텐츠 영역 (page.tsx 렌더링)
+  - 푸터
+- **공통 UI 컴포넌트 (`components/ui/`) - shadcn/ui**
+  - `Card`: 포스트 목록 및 상세 아이템 감싸기
+  - `Button`: 글쓰기, 제출, 삭제 등의 액션 트리거
+  - `Input`: 검색어 입력, 포스트 제목 등의 텍스트 폼
+  - `Dialog`: 삭제 확인 등의 모달 상호작용
+- **도메인 컴포넌트 (`components/`)**
+  - `PostCard`: 포스트 목록에서 사용
+  - `PostForm`: 포스트 작성 및 수정 페이지에서 재사용
 
 ## 데이터 모델
 
-- TODO: 추가 예정
+### `profiles` (사용자)
+- `id`: uuid (PK, auth.users 참조)
+- `username`: text
+- `avatar_url`: text
+- `created_at`: timestamptz
+
+### `posts` (포스트)
+- `id`: uuid (PK)
+- `user_id`: uuid (FK → profiles.id)
+- `title`: text
+- `content`: text
+- `created_at`: timestamptz
