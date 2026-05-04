@@ -39,7 +39,7 @@
 2) 내 정보 및 내 글 목록 확인
 3) 필요 시 글 수정/삭제로 이동
 
-## 4. 기술 스택
+## Tech Stack
 
 - Next.js 16.2.1 (App Router)
 - React 19.2.4
@@ -48,11 +48,12 @@
 - shadcn/ui (components/ui)
 - Supabase (Auth, Storage)
 
-## 5. 라우팅 규칙 (App Router)
+## Coding Conventions
 
-- 라우트는 app/ 폴더 아래에 둔다.
-- 페이지는 page.tsx, 레이아웃은 app/layout.tsx를 사용한다.
-- 기본은 Server Component이며, 브라우저 API나 상호작용이 필요할 때만 "use client"를 사용한다.
+- Default to Server Components unless a Client Component is required.
+- Use Tailwind CSS for styling.
+- Keep components simple and easy to verify.
+- Prefer files inside `app/` for routes.
 
 ## 6. 데이터와 상태
 
@@ -61,21 +62,21 @@
 - 클라이언트 상태(세션)는 React Context (AuthProvider)로 관리한다.
 - 이미지는 Supabase Storage를 사용한다.
 
-## 7. 스타일링 규칙
+## Design Tokens
 
-- 스타일은 Tailwind CSS로 작성한다.
-- Tailwind 기본 색상 클래스는 사용하지 않고, CSS 변수 기반 디자인 토큰을 사용한다.
-- 기본 레이아웃 규칙:
-	- 최대 폭: max-w-4xl mx-auto
-	- 섹션 간격: space-y-6
-	- 카드 패딩: p-6
-	- 반응형: 모바일 1열, md 이상 2열
+- Primary color: shadcn/ui --primary
+- Background: --background
+- Card: shadcn/ui Card 컴포넌트 사용 (rounded-lg shadow-sm)
+- Spacing: 컨텐츠 간격 space-y-6, 카드 내부 p-6
+- Max width: max-w-4xl mx-auto (메인 컨텐츠)
+- 반응형: md 이상 2열 그리드, 모바일 1열
 
-## 8. UI 컴포넌트
+## Component Rules
 
-- shadcn/ui 컴포넌트를 우선 사용한다.
-- Button, Card, Input, Dialog 등은 components/ui/에서 가져온다.
-- 커스텀 컴포넌트는 components/ 루트에 배치한다.
+- UI 컴포넌트는 shadcn/ui 사용 (components/ui/)
+- Button, Card, Input, Dialog 등 shadcn/ui 컴포넌트 우선
+- 커스텀 컴포넌트는 components/ 루트에 배치
+- Tailwind 기본 컬러 직접 사용 금지 → CSS 변수(디자인 토큰) 사용
 
 ## 9. 폴더 가이드
 
@@ -85,13 +86,11 @@
 - lib/: 공용 유틸과 데이터 헬퍼
 - public/: 정적 파일
 
-## 10. 주의사항
+## Known AI Mistakes
 
-- next/router 사용 금지, next/navigation 사용.
-- pages/ 생성 금지, App Router만 사용.
-- 불필요한 "use client" 사용 금지.
-- Tailwind 기본 색상 클래스 사용 금지.
-- Server Component에서 useRouter 같은 클라이언트 훅 사용 금지.
+- Do not use `next/router`; use `next/navigation` when navigation is needed.
+- Do not create `pages/` router files; this project uses the App Router.
+- Do not add `"use client"` unless interactivity or browser APIs are actually needed.
 
 ## 11. 메모
 
