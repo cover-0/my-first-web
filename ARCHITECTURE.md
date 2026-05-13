@@ -58,7 +58,7 @@
 ## 6. 데이터와 상태
 
 - 게시글 데이터는 lib/의 서버 함수로 가져온다.
-- 인증은 Supabase Auth (Email)를 사용한다.
+- 인증은 Supabase Auth (Email/Password 전용)를 사용한다. (소셜 로그인 금지, signInWithPassword 사용)
 - 클라이언트 상태(세션)는 React Context (AuthProvider)로 관리한다.
 - 이미지는 Supabase Storage를 사용한다.
 
@@ -96,6 +96,12 @@
 
 - Tailwind CSS 4는 globals.css에서 @import "tailwindcss" + @theme를 사용한다.
 - Server Component는 클라이언트 훅을 사용할 수 없다.
+
+## Version Policy
+- 교재 기준: Next.js 16.2.1, @supabase/supabase-js 2.47.12, @supabase/ssr 0.5.2
+- 실제 package.json이 더 최신일 수 있다.
+- 수업 프롬프트와 설명은 교재 기준으로 통일한다.
+- 빌드 오류가 버전 차이에서 발생하면 package.json 기준으로 원인을 확인한다.
 
 ## 컴포넌트 구조
 

@@ -15,7 +15,11 @@
 - [x] 포스트 목록 페이지
 - [x] 포스트 상세 페이지
 - [x] 포스트 작성 (CRUD)
-- [ ] 로그인/회원가입
+- [ ] 로그인/회원가입 (이메일/비밀번호 전용)
+  - [ ] lib/auth.ts 함수 작성 (signInWithPassword 등)
+  - [ ] app/login, app/signup 페이지 구현
+  - [ ] AuthProvider, useAuth 구현
+  - [ ] middleware.ts 보호 라우트 (/posts/new) 구현
 
 ## 3단계: 고급 기능 (Ch11~12)
 
