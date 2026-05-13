@@ -52,4 +52,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - `service_role` 키는 클라이언트에 절대 두지 않는다.
 - Ch8 환경변수 이름을 유지한다: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - 보호 라우트 파일로 `middleware.ts`를 사용한다.
+- App Router만 사용한다. `next/router` 금지, `next/navigation` 사용.
+- 패키지 버전은 Ch7·Ch8 교재 기준을 따른다 (Version Policy 참조).
 - Supabase 대시보드 메뉴 안내만 2026년 5월 기준이다.

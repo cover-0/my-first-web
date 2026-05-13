@@ -2,16 +2,49 @@
 
 ## 현재 상태
 
-- 마지막 작업일: 2026-04-29
-- 완료된 작업: 홈 페이지, 헤더/푸터 레이아웃, 포스트 목록, 포스트 상세 페이지, 포스트 작성 (CRUD), 페이지 맵 및 아키텍처 설계 보강, shadcn/ui 환경 세팅 완료
-- 진행 중: 로그인/회원가입
-- 미착수: 마이페이지
+- 마지막 작업일: 2026-05-13
+- 완료된 작업: 홈 페이지, 헤더/푸터 레이아웃, 포스트 목록, 포스트 상세 페이지, 포스트 작성 (CRUD), 페이지 맵 및 아키텍처 설계 보강, shadcn/ui 환경 세팅 완료, **Ch9 Supabase Auth (이메일/비밀번호 인증, 로그인/회원가입/로그아웃, Header 상태 분기, 보호 라우트)**
+- 진행 중: 없음
+- 미착수: 마이페이지, 댓글 기능
 
 ## 기술 결정 사항
 
-- 인증: Supabase Auth (Email)
+- 인증: Supabase Auth 이메일/비밀번호 (소셜 로그인 사용하지 않음)
 - 상태관리: React Context (AuthProvider)
 - 이미지: Supabase Storage 사용 예정
+
+## 환경변수
+
+- `NEXT_PUBLIC_SUPABASE_URL` — Supabase 프로젝트 URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase 익명(anon) 키
+- `.env.local`에 저장, `.gitignore`에 포함됨
+
+## Ch8 Supabase CLI 연결 확인
+
+- `supabase projects list` — 프로젝트 목록 확인
+- `supabase projects api-keys` — API 키 확인
+- CLI로 확인한 URL/Key를 `.env.local`에 설정
+
+## Ch9 Supabase Auth — 생성/수정 파일
+
+| 파일 | 역할 |
+|------|------|
+| `lib/auth.ts` | signUp, signIn, signOut 함수 래핑 |
+| `app/login/page.tsx` | 로그인 페이지 (이메일/비밀번호) |
+| `app/signup/page.tsx` | 회원가입 페이지 (이메일/비밀번호) |
+| `contexts/AuthContext.tsx` | AuthProvider, useAuth 훅 제공 |
+| `components/Header.tsx` | 로그인 상태에 따른 메뉴 분기 |
+| `middleware.ts` | 보호 라우트 처리 (@supabase/ssr 사용) |
+| `app/layout.tsx` | AuthProvider 래핑 추가 |
+
+## Ch9 보호 라우트
+
+- `/posts/new` — 로그인하지 않으면 `/login`으로 리다이렉트
+
+## Ch9 Supabase 대시보드 설정 확인 (2026-05 기준)
+
+- Authentication → Sign In / Providers → **Email** 활성화 확인
+- Authentication → URL Configuration → Site URL, Redirect URLs 확인
 
 ## 해결된 이슈
 

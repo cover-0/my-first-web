@@ -33,7 +33,27 @@
 2) 제목/내용을 입력하고 저장
 3) 저장 후 /posts 또는 /posts/[id]로 이동
 
-### 3.3 마이페이지
+### 3.3 인증 흐름 (Ch9)
+
+1) 사용자가 /signup에서 회원가입 (이메일/비밀번호)
+2) /login에서 로그인
+3) 로그인 후 /posts 등 보호 페이지 접근 가능
+4) Header에서 로그아웃 가능
+
+### 3.4 Header 상태 분기
+
+- **비로그인 상태**: 로그인 버튼, 회원가입 버튼 표시
+- **로그인 상태**: 글쓰기 버튼, 로그아웃 버튼 표시
+
+### 3.5 보호 라우트
+
+| 경로 | 조건 | 리다이렉트 |
+|------|------|------------|
+| `/posts/new` | 비로그인 시 | `/login` |
+
+- `middleware.ts`에서 `@supabase/ssr`의 `createServerClient`로 세션 확인
+
+### 3.6 마이페이지 (미구현)
 
 1) 사용자가 /mypage로 이동
 2) 내 정보 및 내 글 목록 확인
@@ -81,10 +101,14 @@
 ## 9. 폴더 가이드
 
 - app/: 라우트와 레이아웃 (App Router)
-- components/: 커스텀 컴포넌트
+  - app/login/: 로그인 페이지
+  - app/signup/: 회원가입 페이지
+- components/: 커스텀 컴포넌트 (Header.tsx 등)
 - components/ui/: shadcn/ui 컴포넌트
-- lib/: 공용 유틸과 데이터 헬퍼
+- contexts/: React Context (AuthContext.tsx)
+- lib/: 공용 유틸과 데이터 헬퍼 (auth.ts, supabaseClient.ts 등)
 - public/: 정적 파일
+- middleware.ts: 보호 라우트 미들웨어 (루트)
 
 ## Known AI Mistakes
 
@@ -106,7 +130,8 @@
 ## 컴포넌트 구조
 
 - **페이지 레이아웃 (`app/layout.tsx`)**
-  - 헤더 (네비게이션 링크, 로고, 프로필 등)
+  - AuthProvider (인증 상태 전역 제공)
+  - 헤더 (로그인 상태에 따른 메뉴 분기)
   - 메인 콘텐츠 영역 (page.tsx 렌더링)
   - 푸터
 - **공통 UI 컴포넌트 (`components/ui/`) - shadcn/ui**
@@ -115,8 +140,12 @@
   - `Input`: 검색어 입력, 포스트 제목 등의 텍스트 폼
   - `Dialog`: 삭제 확인 등의 모달 상호작용
 - **도메인 컴포넌트 (`components/`)**
+  - `Header`: 로그인 상태 분기 (비로그인: 로그인/회원가입, 로그인: 글쓰기/로그아웃)
   - `PostCard`: 포스트 목록에서 사용
   - `PostForm`: 포스트 작성 및 수정 페이지에서 재사용
+- **인증 (`contexts/`, `lib/`)**
+  - `AuthContext.tsx`: AuthProvider, useAuth 훅
+  - `auth.ts`: signUp, signIn, signOut 래핑 함수
 
 ## 데이터 모델
 

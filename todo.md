@@ -15,15 +15,22 @@
 - [x] 포스트 목록 페이지
 - [x] 포스트 상세 페이지
 - [x] 포스트 작성 (CRUD)
-- [ ] 로그인/회원가입 (이메일/비밀번호 전용)
-  - [ ] lib/auth.ts 함수 작성 (signInWithPassword 등)
-  - [ ] app/login, app/signup 페이지 구현
-  - [ ] AuthProvider, useAuth 구현
-  - [ ] middleware.ts 보호 라우트 (/posts/new) 구현
+- [x] 로그인/회원가입 (이메일/비밀번호 전용)
+  - [x] lib/auth.ts 함수 작성 (signInWithPassword 등)
+  - [x] app/login 페이지 구현
+  - [x] app/signup 페이지 구현
+  - [x] 회원가입 구현
+  - [x] 로그인 구현
+  - [x] 로그아웃 구현
+  - [x] AuthProvider, useAuth 구현
+  - [x] Header 로그인 상태 분기 (비로그인: 로그인/회원가입, 로그인: 글쓰기/로그아웃)
+  - [x] middleware.ts 보호 라우트 (/posts/new) 구현
+- [x] npm run build 검증 — 빌드 성공 확인 (2026-05-13)
+- [x] Vercel 배포 URL 검증 — Production Branch를 exp로 변경 완료 (2026-05-13)
 
 ## 3단계: 고급 기능 (Ch11~12)
 
 - [ ] 마이페이지
 - [ ] 댓글 기능
 
-## 진행률: 8/12 (67%)
+## 진행률: 14/16 (88%)
