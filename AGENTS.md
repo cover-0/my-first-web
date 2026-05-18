@@ -42,9 +42,28 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Version Policy
 - 교재 기준: Next.js 16.2.1, @supabase/supabase-js 2.47.12, @supabase/ssr 0.5.2
+- 현재 설치 기준: Next.js 16.2.1, @supabase/supabase-js ^2.105.1, @supabase/ssr ^0.10.2
 - 실제 package.json이 더 최신일 수 있다.
 - 수업 프롬프트와 설명은 교재 기준으로 통일한다.
 - 빌드 오류가 버전 차이에서 발생하면 package.json 기준으로 원인을 확인한다.
+
+## Database Schema Rules
+데이터 모델 및 컬럼명은 Ch8 기준을 따르며 코딩 시 임의로 바꾸지 않는다.
+- **posts**: `id` (uuid, primary key), `user_id` (uuid, references profiles(id)), `title` (text), `content` (text), `created_at` (timestamptz)
+- **profiles**: `id` (uuid, primary key, references auth.users(id)), `username` (text), `avatar_url` (text), `role` (text)
+
+## Known AI Mistakes & Strict Usage Rules
+
+- Do not use `next/router`; use `next/navigation` when navigation is needed.
+- Do not create `pages/` router files; this project uses the App Router.
+- Do not add `"use client"` unless interactivity or browser APIs are actually needed.
+- Do not use or expose `service_role` (or `SUPABASE_SERVICE_ROLE`, `sb_secret_`) secret keys anywhere inside client components or public variables.
+
+## Ch10 Posts CRUD Rules
+- Ch8의 `lib/supabase/client.ts`를 사용한다.
+- Ch9의 `useAuth/AuthProvider`를 사용한다.
+- posts 컬럼명은 Ch8 스키마 그대로 사용한다.
+- 수정/삭제 UI는 UX이고, 실제 보안은 Ch11 RLS에서 처리한다.
 
 ## Ch9 Supabase Auth Rules
 - 이메일/비밀번호 인증만 사용한다. 소셜 로그인은 추가하지 않는다.

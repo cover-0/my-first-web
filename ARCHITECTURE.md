@@ -50,8 +50,10 @@
 | 경로 | 조건 | 리다이렉트 |
 |------|------|------------|
 | `/posts/new` | 비로그인 시 | `/login` |
+| `/posts/[id]/edit` | 비로그인 시 또는 작성자가 아닐 시 | `/login` 또는 상세 페이지 |
 
-- `middleware.ts`에서 `@supabase/ssr`의 `createServerClient`로 세션 확인
+- `middleware.ts`에서 `@supabase/ssr`의 `createServerClient`로 전역 보호
+- 삭제/수정 버튼은 `PostActions.tsx`에서 클라이언트단 상태 (`user.id === post.user_id`) 조건부 렌더링으로 UX 보호 처리
 
 ### 3.6 마이페이지 (미구현)
 
@@ -67,6 +69,8 @@
 - Tailwind CSS 4
 - shadcn/ui (components/ui)
 - Supabase (Auth, Storage)
+  - 교재 기준: @supabase/supabase-js 2.47.12, @supabase/ssr 0.5.2
+  - 현재 설치 기준: @supabase/supabase-js ^2.105.1, @supabase/ssr ^0.10.2
 
 ## Coding Conventions
 
@@ -77,9 +81,13 @@
 
 ## 6. 데이터와 상태
 
-- 게시글 데이터는 lib/의 서버 함수로 가져온다.
+- 게시글 데이터는 lib/supabase/client.ts 를 이용해 가져온다. (Ch10 기준)
+- 게시글 컬럼명 및 데이터 모델은 Ch8 스키마를 엄격히 따른다. 임의 변경을 금지한다.
+  - **posts**: `id` (uuid, pk), `user_id` (uuid, fk -> profiles(id)), `title` (text), `content` (text), `created_at` (timestamptz)
+  - **profiles**: `id` (uuid, pk, fk -> auth.users(id)), `username` (text), `avatar_url` (text), `role` (text)
+- 게시글 수정 및 삭제에 대한 권한 제어 UI 구성은 현재 UX 관점으로 처리하며, 실재 데이터베이스 레벨 보안은 RLS(Ch11)에서 다룬다.
 - 인증은 Supabase Auth (Email/Password 전용)를 사용한다. (소셜 로그인 금지, signInWithPassword 사용)
-- 클라이언트 상태(세션)는 React Context (AuthProvider)로 관리한다.
+- 클라이언트 상태(세션)는 React Context (AuthProvider, useAuth)로 관리한다.
 - 이미지는 Supabase Storage를 사용한다.
 
 ## Design Tokens

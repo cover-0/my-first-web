@@ -5,7 +5,7 @@
 - 마지막 작업일: 2026-05-13
 - 완료된 작업: 홈 페이지, 헤더/푸터 레이아웃, 포스트 목록, 포스트 상세 페이지, 포스트 작성 (CRUD), 페이지 맵 및 아키텍처 설계 보강, shadcn/ui 환경 세팅 완료, **Ch9 Supabase Auth (이메일/비밀번호 인증, 로그인/회원가입/로그아웃, Header 상태 분기, 보호 라우트)**
 - 진행 중: 없음
-- 미착수: 마이페이지, 댓글 기능
+- 미착수: 마이페이지, 댓글 기능, 게시글 RLS 권한 보안 (Ch11)
 
 ## 기술 결정 사항
 
@@ -65,6 +65,21 @@
 
 ## Version Policy
 - 교재 기준: Next.js 16.2.1, @supabase/supabase-js 2.47.12, @supabase/ssr 0.5.2
+- 현재 설치 기준: Next.js 16.2.1, @supabase/supabase-js ^2.105.1, @supabase/ssr ^0.10.2
 - 실제 package.json이 더 최신일 수 있다.
 - 수업 프롬프트와 설명은 교재 기준으로 통일한다.
 - 빌드 오류가 버전 차이에서 발생하면 package.json 기준으로 원인을 확인한다.
+
+## Ch10 Posts CRUD 기준 및 완료 내역
+- **구현 상태**: 게시글 목록, 상세, 작성, 수정, 삭제 CRUD 구축 완료 (Mock API 완전 제거 완료).
+- **생성/수정 폴더 및 파일**: 
+  - `app/posts/page.tsx` (목록 조회)
+  - `app/posts/[id]/page.tsx` (상세 조회 로직)
+  - `app/posts/new/page.tsx` (작성 로직 적용 및 기존 Form 컴포넌트 대체)
+  - `app/posts/[id]/edit/page.tsx` (수정 로직 적용)
+  - `app/posts/[id]/_components/PostActions.tsx`, `DeletePostButton.tsx` (수정/삭제 권한 버튼 및 기능 로직)
+  - `lib/supabase/client.ts` (구조화 및 파일 위치 변경 적용)
+- **Supabase 쿼리 패턴**: `select` (조회), `insert` (생성), `update` (수정), `delete` (삭제) 메서드들을 `.eq("id", postId)` 등의 조건과 함께 사용.
+- 인증 연동: Ch9의 `useAuth/AuthProvider`를 사용하여 작성자 여부 확인.
+  - 작성자 UI 분기: 클라이언트 단에서 `user.id === post.user_id`를 검사 후 수정/삭제 표시 결정.
+- 권한 제어: 폼 진입 시 방어나 버튼 노출은 UI/UX 레벨이며, **실제 데이터베이스 접근 제어(보안)는 다음 챕터인 Ch11 RLS에서 처리**할 예정.

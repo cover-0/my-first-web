@@ -2,18 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Post } from "@/lib/posts";
 import { Button } from "@/components/ui/button";
-import { deletePost } from "@/lib/posts";
+import { createClient } from "@/lib/supabase/client";
 
 type DeletePostButtonProps = {
-  postId: number;
+  postId: string;
 };
 
 export default function DeletePostButton({ postId }: DeletePostButtonProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [, setDeletedPosts] = useState<Post[]>([]);
 
   const handleDelete = async () => {
     const shouldDelete = window.confirm("정말 삭제하시겠습니까?");
@@ -24,14 +22,18 @@ export default function DeletePostButton({ postId }: DeletePostButtonProps) {
     setIsDeleting(true);
 
     try {
-      const ok = await deletePost(postId);
-      if (!ok) {
-        window.alert("삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      const supabase = createClient();
+      const { error } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", postId);
+
+      if (error) {
+        window.alert("게시글 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.");
         return;
       }
 
-      setDeletedPosts((previous) => previous.filter((post) => post.id !== postId));
-      window.alert("삭제되었습니다.");
+      window.alert("게시글이 삭제되었습니다.");
       router.push("/posts");
       router.refresh();
     } catch {
