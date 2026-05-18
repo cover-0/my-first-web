@@ -56,7 +56,8 @@ export default function NewPostPage() {
     setIsSubmitting(false);
 
     if (insertError) {
-      setError("게시글 저장에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      console.error("게시글 저장 에러:", insertError);
+      setError(`게시글 저장에 실패했습니다. (${insertError.message})`);
       return;
     }
 
