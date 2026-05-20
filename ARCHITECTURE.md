@@ -85,10 +85,23 @@
 - 게시글 컬럼명 및 데이터 모델은 Ch8 스키마를 엄격히 따른다. 임의 변경을 금지한다.
   - **posts**: `id` (uuid, pk), `user_id` (uuid, fk -> profiles(id)), `title` (text), `content` (text), `created_at` (timestamptz)
   - **profiles**: `id` (uuid, pk, fk -> auth.users(id)), `username` (text), `avatar_url` (text), `role` (text)
-- 게시글 수정 및 삭제에 대한 권한 제어 UI 구성은 현재 UX 관점으로 처리하며, 실재 데이터베이스 레벨 보안은 RLS(Ch11)에서 다룬다.
+- 게시글 수정 및 삭제에 대한 권한 제어 UI 구성은 현재 UX 관점으로 처리하며, **실제 보안은 RLS(Row Level Security)가 담당한다 (Ch11 기준).**
+- **RLS 규칙**:
+  - RLS는 대시보드 SQL Editor 직접 실행이 아니라 **Supabase CLI 마이그레이션 파일로 기록**하고 적용한다.
+  - `posts` 테이블의 `user_id`와 `auth.uid()`를 기준으로 정책을 만든다.
+  - 클라이언트 환경에서 `service_role` 키는 절대 사용하지 않는다. (보안 우회 방지)
 - 인증은 Supabase Auth (Email/Password 전용)를 사용한다. (소셜 로그인 금지, signInWithPassword 사용)
 - 클라이언트 상태(세션)는 React Context (AuthProvider, useAuth)로 관리한다.
 - 이미지는 Supabase Storage를 사용한다.
+
+## 7. 시스템 보안 계층 (Ch11 기준)
+
+- **UX 레벨 분기 (Frontend)**: 클라이언트 컴포넌트(`PostActions.tsx` 등)에서 로그인한 유저 ID(`user.id`)와 글 작성자 ID(`post.user_id`)를 비교해 수정/삭제 버튼 노출 여부를 결정합니다. 이는 사용자 경험(UX)을 위한 1차 처리입니다.
+- **DB 보안 레벨 (RLS)**: 실제 데이터 보호는 Supabase의 RLS(Row Level Security)를 통해 DB 레벨에서 강제합니다. 클라이언트 사이드 제한을 우회하는 API 호출이나 변조 시도가 있더라도 접근을 완벽히 차단합니다.
+- **보호 정책 목록 (RLS Policies)**:
+  - **읽기 (SELECT)**: 누구나 접근 가능 (`USING (true)`)
+  - **생성 (INSERT)**: 로그인 사용자(auth) 필수 & 본인 ID(`auth.uid() = user_id`)로만 생성 가능
+  - **수정 (UPDATE) / 삭제 (DELETE)**: 로그인 사용자 필수 & 작성자(`auth.uid() = user_id`) 본인만 수정/삭제 가능
 
 ## Design Tokens
 

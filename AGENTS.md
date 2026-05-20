@@ -58,6 +58,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Do not create `pages/` router files; this project uses the App Router.
 - Do not add `"use client"` unless interactivity or browser APIs are actually needed.
 - Do not use or expose `service_role` (or `SUPABASE_SERVICE_ROLE`, `sb_secret_`) secret keys anywhere inside client components or public variables.
+- **[Ch11 Security Rule] 보안은 클라이언트의 if문 분기가 아니라, 반드시 데이터베이스의 RLS(Row Level Security) 제약을 통해 강제한다.**
+- **[Ch11 Security Rule] RLS SQL 코드는 Supabase 대시보드 직접 입력방식이 아닌, `supabase/migrations/` 폴더 내에 마이그레이션 파일로 남긴다.**
+- **[Ch11 Security Rule] 어떠한 경우에도 `service_role` 키를 클라이언트 코드 등 외부에 노출되는 곳에서 사용하지 않는다.**
 
 ## Ch10 Posts CRUD Rules
 - Ch8의 `lib/supabase/client.ts`를 사용한다.
