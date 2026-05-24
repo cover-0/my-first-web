@@ -11,6 +11,7 @@ import Link from "next/link";
 export default function SignupPage() {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,7 +23,7 @@ export default function SignupPage() {
     setError("");
     setLoading(true);
 
-    const { error: signUpError } = await signUpWithEmail(email, password, name);
+    const { error: signUpError } = await signUpWithEmail(email, password, name, nickname);
 
     if (signUpError) {
       setError(signUpError.message);
@@ -67,7 +68,7 @@ export default function SignupPage() {
           <form onSubmit={handleSignup} className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="name">
-                이름
+                실명 (결제 및 본인확인용)
               </label>
               <Input
                 id="name"
@@ -76,6 +77,19 @@ export default function SignupPage() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="홍길동"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="nickname">
+                닉네임 (게시글 및 댓글용)
+              </label>
+              <Input
+                id="nickname"
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                required
+                placeholder="멋진 닉네임"
               />
             </div>
             <div className="space-y-2">

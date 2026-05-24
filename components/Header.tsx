@@ -35,6 +35,9 @@ export default function Header() {
               <Link href="/posts/new" className="text-gray-200 hover:text-white">
                 새 글 쓰기
               </Link>
+              <Link href="/profile" className="text-gray-200 hover:text-white">
+                내 정보
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="text-gray-200 hover:text-white transition-colors"

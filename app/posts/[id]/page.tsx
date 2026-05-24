@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import PostActions from "./_components/PostActions";
 import LikeButton from "./_components/LikeButton";
+import CommentSection from "./_components/CommentSection";
 
 type PostDetailPageProps = {
 	params: Promise<{ id: string }>;
@@ -15,7 +16,7 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 
 	const { data: post, error } = await supabase
 		.from("posts")
-		.select("id, title, content, created_at, user_id")
+		.select("id, title, content, created_at, user_id, profiles(username)")
 		.eq("id", id)
 		.single();
 
@@ -29,13 +30,22 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 		.select("*", { count: "exact", head: true })
 		.eq("post_id", post.id);
 
+	// 댓글 목록 가져오기 (작성자 프로필 정보 포함)
+	const { data: comments } = await supabase
+		.from("comments")
+		.select("*, profiles(username, avatar_url)")
+		.eq("post_id", post.id)
+		.order("created_at", { ascending: true });
+
 	return (
 		<article className="mx-auto w-full max-w-4xl space-y-6">
 			<header className="space-y-2">
 				<h1 className="text-3xl font-semibold">{post.title}</h1>
-				<p className="text-sm text-muted-foreground">
-					{new Date(post.created_at).toLocaleDateString()}
-				</p>
+				<div className="flex items-center gap-2 text-sm text-muted-foreground">
+					<span className="font-medium text-foreground">{(post.profiles as any)?.username || "익명"}</span>
+					<span>•</span>
+					<span>{new Date(post.created_at).toLocaleDateString()}</span>
+				</div>
 			</header>
 			<p className="leading-7 whitespace-pre-wrap text-foreground">{post.content}</p>
 
@@ -46,6 +56,8 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 				</Button>
 				<PostActions postId={post.id} authorId={post.user_id} />
 			</div>
+
+			<CommentSection postId={post.id} initialComments={comments || []} />
 		</article>
 	);
 }

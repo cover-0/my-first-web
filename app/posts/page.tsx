@@ -22,7 +22,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
   // 전체 데이터 개수(count: "exact")와 현재 페이지의 데이터(range)를 함께 가져옵니다.
   const { data: posts, count, error } = await supabase
     .from("posts")
-    .select("id, title, content, created_at, user_id, post_likes(count)", { count: "exact" })
+    .select("id, title, content, created_at, user_id, post_likes(count), comments(count), profiles(username)", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -59,21 +59,42 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
             <h2 className="text-lg font-semibold">{post.title}</h2>
             <p className="mt-2 line-clamp-2 text-sm text-gray-600">{post.content}</p>
             <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-              <span>{new Date(post.created_at).toLocaleDateString()}</span>
-              <div className="flex items-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-3.5 w-3.5 text-red-500"
-                >
-                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                </svg>
-                <span>{post.post_likes?.[0]?.count || 0}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-foreground">{(post.profiles as any)?.username || "익명"}</span>
+                <span>•</span>
+                <span>{new Date(post.created_at).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3.5 w-3.5 text-red-500"
+                  >
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                  </svg>
+                  <span>{post.post_likes?.[0]?.count || 0}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-3.5 w-3.5 text-blue-500"
+                  >
+                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                  </svg>
+                  <span>{post.comments?.[0]?.count || 0}</span>
+                </div>
               </div>
             </div>
           </Link>
