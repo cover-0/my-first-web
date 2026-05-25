@@ -27,6 +27,8 @@ export default function CommentSection({ postId, initialComments }: CommentSecti
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
   const { user } = useAuth();
   const router = useRouter();
   const supabase = createClient();
@@ -58,6 +60,34 @@ export default function CommentSection({ postId, initialComments }: CommentSecti
       alert("댓글 작성에 실패했습니다.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleStartEdit = (commentId: string, content: string) => {
+    setEditingCommentId(commentId);
+    setEditContent(content);
+  };
+
+  const handleUpdate = async (commentId: string) => {
+    const trimmed = editContent.trim();
+    if (!trimmed) return;
+
+    // Optimistic UI: 화면 상태를 먼저 반영합니다.
+    const previousComments = [...comments];
+    setComments(comments.map((c) => c.id === commentId ? { ...c, content: trimmed } : c));
+    setEditingCommentId(null);
+
+    try {
+      const { error } = await supabase
+        .from("comments")
+        .update({ content: trimmed })
+        .eq("id", commentId);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      alert("댓글 수정에 실패했습니다.");
+      setComments(previousComments); // 실패 시 복원
     }
   };
 
@@ -111,18 +141,57 @@ export default function CommentSection({ postId, initialComments }: CommentSecti
                 {new Date(comment.created_at).toLocaleDateString()}
               </span>
             </div>
-            <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
-            {user?.id === comment.user_id && (
-              <div className="mt-3 flex justify-end">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => handleDelete(comment.id)}
-                  className="h-8 text-xs text-red-500 hover:text-red-700 hover:bg-red-50"
-                >
-                  삭제
-                </Button>
+            
+            {editingCommentId === comment.id ? (
+              <div className="space-y-3 mt-2">
+                <Textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="min-h-[80px]"
+                />
+                <div className="flex justify-end gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setEditingCommentId(null)}
+                    className="h-8 text-xs"
+                  >
+                    취소
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    onClick={() => handleUpdate(comment.id)}
+                    disabled={!editContent.trim()}
+                    className="h-8 text-xs"
+                  >
+                    저장
+                  </Button>
+                </div>
               </div>
+            ) : (
+              <>
+                <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
+                {user?.id === comment.user_id && (
+                  <div className="mt-3 flex justify-end gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleStartEdit(comment.id, comment.content)}
+                      className="h-8 text-xs text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                    >
+                      수정
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleDelete(comment.id)}
+                      className="h-8 text-xs text-red-500 hover:text-red-700 hover:bg-red-50"
+                    >
+                      삭제
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         ))}

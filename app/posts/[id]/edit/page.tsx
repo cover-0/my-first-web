@@ -60,12 +60,14 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
   }, [postId, authLoading, user, router]);
 
   // 로딩 상태 처리 등
-  if (authLoading || isFetching) return null;
+  if (authLoading) return null;
 
   if (!user) {
     router.push("/login");
     return null;
   }
+
+  if (isFetching) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
