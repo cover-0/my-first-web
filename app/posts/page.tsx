@@ -22,7 +22,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
   // 전체 데이터 개수(count: "exact")와 현재 페이지의 데이터(range)를 함께 가져옵니다.
   const { data: posts, count, error } = await supabase
     .from("posts")
-    .select("id, title, content, created_at, user_id, post_likes(count), comments(count), profiles(username)", { count: "exact" })
+    .select("id, title, content, created_at, user_id, view_count, post_likes(count), comments(count), profiles(username)", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -65,6 +65,10 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
               </div>
               <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 text-green-500"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span>{post.view_count || 0}</span>
+                </div>
                 <div className="flex items-center gap-1">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
