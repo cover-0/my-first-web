@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { getFriendlyErrorMessage } from "@/lib/error-message";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,7 +24,10 @@ export default function LoginPage() {
     const { error: signInError } = await signInWithEmail(email, password);
 
     if (signInError) {
-      setError(signInError.message);
+      // 요구사항: 개발자용 console.error 유지
+      console.error("로그인 에러 상세:", signInError);
+      // 화면에는 변환 유틸을 적용하여 안전한 메시지 노출
+      setError(getFriendlyErrorMessage(signInError));
       setLoading(false);
     } else {
       router.push("/posts");

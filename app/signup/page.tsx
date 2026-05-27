@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { getFriendlyErrorMessage } from "@/lib/error-message";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -26,7 +27,10 @@ export default function SignupPage() {
     const { error: signUpError } = await signUpWithEmail(email, password, name, nickname);
 
     if (signUpError) {
-      setError(signUpError.message);
+      // 요구사항: 개발자용 console.error 유지
+      console.error("회원가입 에러 상세:", signUpError);
+      // 화면에는 변환 유틸을 적용하여 안전한 메시지 노출
+      setError(getFriendlyErrorMessage(signUpError));
       setLoading(false);
     } else {
       setSuccess(true);

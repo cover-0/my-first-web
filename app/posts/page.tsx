@@ -46,7 +46,37 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
       </div>
 
       {!posts || posts.length === 0 ? (
-        <div className="p-6 text-center text-gray-500">작성된 게시글이 없습니다.</div>
+        <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed border-border/80 rounded-2xl bg-card/50 space-y-6">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/5 text-primary">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-8 w-8"
+            >
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.12 2.12 0 1 1 3 3L12 15l-4 1 1-4Z" />
+            </svg>
+          </div>
+          <div className="space-y-2 max-w-sm">
+            <h3 className="text-lg font-semibold text-foreground">
+              아직 등록된 이야기가 없습니다
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              당신만의 흥미로운 이야기나 유익한 웹 개발 학습 기록을 여기에 첫 발자국으로 남겨보세요!
+            </p>
+          </div>
+          <Link
+            href="/posts/new"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+          >
+            첫 글 작성하기
+          </Link>
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

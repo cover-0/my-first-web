@@ -44,4 +44,25 @@
 - [x] 좋아요 기능 (Optimistic UI, RLS 보안 적용) (Ch12+)
 - [x] 조회수 기능 (RPC, 로컬스토리지 중복 방지) (Ch12+)
 
-## 진행률: 23/23 (100%)
+## 4단계: 에러 처리와 UX 완성 (Ch12)
+
+### 12.2 loading/error/not-found/empty state
+- [x] app/posts/loading.tsx 생성 (목록 스켈레톤)
+- [x] app/posts/[id]/loading.tsx 생성 (상세 스켈레톤)
+- [x] app/posts/error.tsx 생성 (에러 바운더리 + reset 복구)
+- [x] app/not-found.tsx 생성 (글로벌 404)
+- [x] app/posts/page.tsx 수정 (Empty State 고도화)
+
+### 12.3 폼 유효성 검증
+- [x] app/posts/new/page.tsx 수정 (제목 최소 2자, 내용 최소 10자, 필드별 에러, 제출 중 disabled)
+
+### 12.4 에러 메시지 유틸 및 인증 폼 연동
+- [x] lib/error-message.ts 생성 (에러 번역 유틸 — RLS/네트워크/Auth 등 7종 매핑)
+- [x] app/login/page.tsx 수정 (에러 번역 적용 + console.error 분리)
+- [x] app/signup/page.tsx 수정 (에러 번역 적용 + console.error 분리)
+
+### 12.5 검증
+- [x] npm run build — 빌드 성공
+- [x] git grep — service_role / next/router / auth.signIn 미검출
+
+## 진행률: 34/34 (100%)

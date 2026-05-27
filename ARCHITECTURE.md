@@ -124,10 +124,14 @@
 - app/: 라우트와 레이아웃 (App Router)
   - app/login/: 로그인 페이지
   - app/signup/: 회원가입 페이지
+  - app/not-found.tsx: 글로벌 404 페이지
+  - app/posts/loading.tsx: 목록 스켈레톤 로딩
+  - app/posts/error.tsx: `/posts` 하위 에러 바운더리 (`"use client"`)
+  - app/posts/[id]/loading.tsx: 상세 스켈레톤 로딩
 - components/: 커스텀 컴포넌트 (Header.tsx 등)
 - components/ui/: shadcn/ui 컴포넌트
 - contexts/: React Context (AuthContext.tsx)
-- lib/: 공용 유틸과 데이터 헬퍼 (auth.ts, supabaseClient.ts 등)
+- lib/: 공용 유틸과 데이터 헬퍼 (auth.ts, supabaseClient.ts, error-message.ts 등)
 - public/: 정적 파일
 - middleware.ts: 보호 라우트 미들웨어 (루트)
 
@@ -141,6 +145,33 @@
 
 - Tailwind CSS 4는 globals.css에서 @import "tailwindcss" + @theme를 사용한다.
 - Server Component는 클라이언트 훅을 사용할 수 없다.
+
+## 12. 에러 처리 전략 (Ch12)
+
+### Next.js App Router 내장 파일 컨벤션
+
+| 파일 | 역할 | 위치 |
+|------|------|------|
+| `loading.tsx` | 데이터 로딩 중 스켈레톤 UI 표시 | `app/posts/`, `app/posts/[id]/` |
+| `error.tsx` | 런타임 에러 격리 및 복구 (`"use client"` 필수) | `app/posts/` |
+| `not-found.tsx` | 404 페이지 (`notFound()` 또는 미매칭 라우트) | `app/` (글로벌) |
+
+### 에러 메시지 원칙
+
+- **사용자 화면**: `getFriendlyErrorMessage()` 유틸로 변환된 친절한 한글 메시지만 노출
+- **개발자 콘솔**: `console.error()`로 원본 에러 객체 상세 기록
+- **보안**: Supabase 내부 구조, 테이블명, 에러 스택 등 기술 정보는 절대 사용자에게 노출하지 않음
+
+### 에러 변환 유틸 (`lib/error-message.ts`)
+
+`getFriendlyErrorMessage(error)` 함수가 에러 객체의 `code`/`message`를 분석하여 다음 규칙으로 변환:
+- RLS 권한 위반 (42501) → 권한 없음 안내
+- 네트워크 단절 (Failed to fetch) → 인터넷 확인 안내
+- 자원 미발견 (PGRST116) → 게시글 없음 안내
+- 인증 실패 (invalid credentials) → 이메일/비밀번호 확인 안내
+- 기타 → 일시적 오류 재시도 안내
+
+적용 페이지: `app/login/page.tsx`, `app/signup/page.tsx`, `app/posts/new/page.tsx`
 
 ## Version Policy
 - 교재 기준: Next.js 16.2.1, @supabase/supabase-js 2.47.12, @supabase/ssr 0.5.2

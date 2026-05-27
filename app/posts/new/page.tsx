@@ -16,7 +16,11 @@ export default function NewPostPage() {
   
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<{
+    title?: string;
+    content?: string;
+  }>({});
+  const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 로딩 중일 때는 아무것도 표시하지 않음
@@ -30,13 +34,28 @@ export default function NewPostPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
+    setValidationErrors({});
+    setFormError(null);
 
     const trimmedTitle = title.trim();
     const trimmedContent = content.trim();
 
-    if (!trimmedTitle || !trimmedContent) {
-      setError("제목과 내용을 모두 입력해주세요.");
+    const errors: { title?: string; content?: string } = {};
+
+    if (!trimmedTitle) {
+      errors.title = "제목을 입력해주세요.";
+    } else if (trimmedTitle.length < 2) {
+      errors.title = "제목은 최소 2자 이상 입력해야 합니다.";
+    }
+
+    if (!trimmedContent) {
+      errors.content = "내용을 입력해주세요.";
+    } else if (trimmedContent.length < 10) {
+      errors.content = "내용은 최소 10자 이상 입력해야 합니다.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
       return;
     }
 
@@ -56,8 +75,10 @@ export default function NewPostPage() {
     setIsSubmitting(false);
 
     if (insertError) {
-      console.error("게시글 저장 에러:", insertError);
-      setError(`게시글 저장에 실패했습니다. (${insertError.message})`);
+      // 요구사항: 서버/Supabase 에러 원문은 console.error로 기록
+      console.error("게시글 저장 에러 상세:", insertError);
+      // 화면에는 친절한 비기술적 메시지만 표시
+      setFormError("네트워크 연결 또는 서버 오류가 발생하여 게시글을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
 
@@ -85,8 +106,15 @@ export default function NewPostPage() {
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="제목을 입력하세요"
+                placeholder="제목을 입력하세요 (최소 2자)"
+                disabled={isSubmitting}
+                className={validationErrors.title ? "border-destructive focus-visible:ring-destructive" : ""}
               />
+              {validationErrors.title && (
+                <p className="text-xs font-medium text-destructive mt-1">
+                  {validationErrors.title}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -97,15 +125,32 @@ export default function NewPostPage() {
                 id="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="내용을 입력하세요"
-                className="min-h-[300px]"
+                placeholder="내용을 입력하세요 (최소 10자)"
+                className={`min-h-[300px] ${
+                  validationErrors.content ? "border-destructive focus-visible:ring-destructive" : ""
+                }`}
+                disabled={isSubmitting}
               />
+              {validationErrors.content && (
+                <p className="text-xs font-medium text-destructive mt-1">
+                  {validationErrors.content}
+                </p>
+              )}
             </div>
 
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {formError && (
+              <p className="text-sm font-medium text-destructive p-3 rounded-md bg-destructive/10">
+                {formError}
+              </p>
+            )}
 
             <div className="flex justify-end gap-3">
-              <Button type="button" variant="outline" onClick={() => router.push("/posts")}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.push("/posts")}
+                disabled={isSubmitting}
+              >
                 취소
               </Button>
               <Button type="submit" disabled={isSubmitting}>

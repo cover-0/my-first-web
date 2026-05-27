@@ -2,8 +2,8 @@
 
 ## 현재 상태
 
-- 마지막 작업일: 2026-05-25
-- 완료된 작업: 홈 페이지, 헤더/푸터 레이아웃, 포스트 목록, 포스트 상세 페이지, 포스트 작성 (CRUD), 페이지 맵 및 아키텍처 설계 보강, shadcn/ui 환경 세팅 완료, **Ch9 Supabase Auth (이메일/비밀번호 인증, 로그인/회원가입/로그아웃, Header 상태 분기, 보호 라우트)**, **Ch11 게시글 RLS 권한 보안 적용**, **마이페이지 (닉네임/실명 수정)**, **댓글 기능 (작성/수정/삭제, RLS)**, **좋아요 기능 (Optimistic UI, RLS)**, **조회수 기능 (RPC, 로컬스토리지 중복 방지)**
+- 마지막 작업일: 2026-05-27
+- 완료된 작업: 홈 페이지, 헤더/푸터 레이아웃, 포스트 목록, 포스트 상세 페이지, 포스트 작성 (CRUD), 페이지 맵 및 아키텍처 설계 보강, shadcn/ui 환경 세팅 완료, **Ch9 Supabase Auth (이메일/비밀번호 인증, 로그인/회원가입/로그아웃, Header 상태 분기, 보호 라우트)**, **Ch11 게시글 RLS 권한 보안 적용**, **마이페이지 (닉네임/실명 수정)**, **댓글 기능 (작성/수정/삭제, RLS)**, **좋아요 기능 (Optimistic UI, RLS)**, **조회수 기능 (RPC, 로컬스토리지 중복 방지)**, **로딩 UX 및 에러 처리 (스켈레톤, 에러 바운더리, 404, Empty State)**
 - 진행 중: 없음
 - 미착수: 없음
 
@@ -96,3 +96,55 @@
   - 비로그인: 권한 없음, 데이터 접근/조작 차단 확인
   - 사용자 A: 본인이 작성한 글 정상적으로 수정 및 삭제 가능
   - 사용자 B: 다른 사용자인 사용자 A의 글에 대한 수정/삭제 시도 시 DB 단에서 차단 확인
+
+## Ch12 에러 처리와 UX 완성
+
+### 생성/수정 파일 목록
+
+| 파일 | 역할 | 유형 |
+|------|------|------|
+| `app/posts/loading.tsx` | 목록 페이지 스켈레톤 (6카드 2열 그리드, `animate-pulse`) | NEW |
+| `app/posts/[id]/loading.tsx` | 상세 페이지 스켈레톤 (본문, 아바타, 액션, 댓글 영역) | NEW |
+| `app/posts/error.tsx` | `/posts` 하위 에러 바운더리 (`"use client"`, `reset()` 복구) | NEW |
+| `app/not-found.tsx` | 글로벌 404 Not Found 페이지 | NEW |
+| `lib/error-message.ts` | 에러 메시지 번역 유틸 (`getFriendlyErrorMessage`) | NEW |
+| `app/posts/page.tsx` | Empty State 고도화 (깃펜 SVG + CTA 버튼) | MODIFY |
+| `app/posts/new/page.tsx` | 클라이언트 폼 유효성 검증 추가 | MODIFY |
+| `app/login/page.tsx` | 에러 번역 유틸 적용 + console.error 분리 | MODIFY |
+| `app/signup/page.tsx` | 에러 번역 유틸 적용 + console.error 분리 | MODIFY |
+
+### 화면별 loading / empty / error 상태
+
+| 화면 | loading 상태 | empty 상태 | error 상태 |
+|------|-------------|-----------|------------|
+| `/posts` (목록) | `loading.tsx` 스켈레톤 6카드 | 깃펜 아이콘 + "아직 등록된 이야기가 없습니다" + 첫 글 작성 CTA | `error.tsx` 에러 카드 + 다시 시도/목록 이동 버튼 |
+| `/posts/[id]` (상세) | `loading.tsx` 상세 레이아웃 스켈레톤 | `notFound()` → 404 페이지 | `error.tsx` 공유 |
+| `/posts/new` (작성) | 버튼 "저장 중..." + 전체 input disabled | — | 폼 하단 formError 배너 (친절한 서버 에러 메시지) |
+| 전역 404 | — | — | `not-found.tsx` (바운싱 SVG + "페이지를 찾을 수 없습니다") |
+
+### 폼 유효성 검증 규칙 (`/posts/new`)
+
+| 필드 | 규칙 | 에러 메시지 |
+|------|------|------------|
+| 제목 | 필수, trim 후 최소 2자 | "제목을 입력해주세요." / "제목은 최소 2자 이상 입력해야 합니다." |
+| 내용 | 필수, trim 후 최소 10자 | "내용을 입력해주세요." / "내용은 최소 10자 이상 입력해야 합니다." |
+| 제출 중 | 모든 input + 취소/저장 버튼 `disabled` | 버튼 텍스트 "저장 중..." |
+
+### 에러 메시지 변환 규칙 (`lib/error-message.ts`)
+
+| 조건 (code 또는 message 포함) | 사용자에게 보여주는 메시지 |
+|------------------------------|-------------------------|
+| `42501` / `row-level security` | "이 작업을 수행할 권한이 없습니다." |
+| `Failed to fetch` / `network` | "인터넷 연결을 확인해주세요." |
+| `PGRST116` / `not found` | "요청한 게시글을 찾을 수 없습니다." |
+| `invalid login credentials` | "이메일 또는 비밀번호가 올바르지 않습니다." |
+| `email not confirmed` | "이메일 인증이 완료되지 않았습니다. 메일함을 확인해 주세요." |
+| `user already exists` | "이미 회원가입된 이메일 주소입니다." |
+| `password should be at least` | "비밀번호는 최소 6자리 이상이어야 합니다." |
+| 기본값 | "일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요." |
+
+> **원칙**: 기술적 에러 원문은 `console.error`로만 기록하고, 사용자 화면에는 위 번역 메시지만 노출한다.
+
+### 검증 완료
+- `npm run build` — 빌드 성공 (타입 오류 없음)
+- `git grep` — `service_role`, `next/router`, `auth.signIn(` 미검출 (보안 통과)
