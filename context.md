@@ -50,6 +50,10 @@
 
 - shadcn/ui Button variant가 디자인 토큰과 불일치 → globals.css의 --primary 수정으로 해결
 - 모바일 헤더 메뉴가 겹침 → Sheet 컴포넌트로 교체
+- [Ch13] Playwright Webkit(Safari) 로컬 통신에서 쿠키 유지안되는 ITP 버그 발생 → config에서 webkit 주석 처리 후 Chromium/Firefox 로 검증 완수
+- [Ch13] 브라우저 알림창(alert) 렌더에 따른 Playwright 블로킹 현상 → event listener `dialog.accept()` 사전 선언으로 해결
+- [Ch13] 과도기 시절의 사용 안하는 컴포넌트(Mock API, 구버전 검색바 등) 찌꺼기 파일들 삭제 (코드리뷰 후속조치)
+- [Ch13] `/profile`, `/posts/:id/edit` 같은 보호 대상 라우트를 `middleware.ts` 내부 matcher에 누락했던 부분 추가 (코드리뷰 후속조치)
 
 ## 알게 된 점
 
@@ -98,6 +102,18 @@
   - 사용자 B: 다른 사용자인 사용자 A의 글에 대한 수정/삭제 시도 시 DB 단에서 차단 확인
 
 ## Ch12 에러 처리와 UX 완성
+
+- **Empty State, Skeleton UI, 에러 바운더리 등 UX 고도화 완수**
+- `lib/error-message.ts` 를 활용하여 기술적인 에러코드를 사용 친화적 메세지로 치환
+- `git grep` 보안/구버전 API 검사 통과
+
+## Ch13 AI 결과물 검증 (최종)
+
+- **E2E 테스트 (Playwright)**:
+  - `tests/auth-crud.spec.ts` 구축
+  - 시나리오 1. 로그인 후 새 글 작성 완료(`행복 경로`) 테스트 통과.
+  - 시나리오 2. 비로그인 시 `/posts/new` 접근 시 차단(`거절 경로`) 테스트 통과.
+  - Vercel 배포 URL 수동 검증 100% 완료 (로그인, 게시글 CRUD, 미들웨어 보호, DB RLS 차단 전부 정상 작동 확인).
 
 ### 생성/수정 파일 목록
 

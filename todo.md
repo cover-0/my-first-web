@@ -65,4 +65,11 @@
 - [x] npm run build — 빌드 성공
 - [x] git grep — service_role / next/router / auth.signIn 미검출
 
-## 진행률: 34/34 (100%)
+## 5단계: AI 결과물 검증 (Ch13)
+
+- [x] 13.1 Playwright E2E 테스트 환경 구축 및 테스트 작성
+- [x] 13.1 Playwright E2E 로컬 통과 (Chromium, Firefox)
+- [x] 13.2 전체 프로젝트 코드 리뷰 통과 (보안, 데이터, 미들웨어 점검 완)
+- [x] 13.3 Vercel 환경변수 세팅 및 배포 URL 수동 시나리오 검증
+
+## 진행률: 38/38 (100%)
