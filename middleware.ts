@@ -48,5 +48,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/posts/new",
+    "/posts/:id/edit",
+    "/profile"
   ],
 };
