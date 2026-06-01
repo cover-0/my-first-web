@@ -81,16 +81,19 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
         <>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {posts.map((post) => (
-          <Link
+          <div
             key={post.id}
-            href={`/posts/${post.id}`}
-            className="block rounded-lg border border-gray-200 p-6 shadow-sm transition hover:shadow-md bg-card text-card-foreground"
+            className="flex flex-col rounded-lg border border-gray-200 p-6 shadow-sm transition hover:shadow-md bg-card text-card-foreground"
           >
-            <h2 className="text-lg font-semibold">{post.title}</h2>
-            <p className="mt-2 line-clamp-2 text-sm text-gray-600">{post.content}</p>
+            <Link href={`/posts/${post.id}`} className="block flex-grow">
+              <h2 className="text-lg font-semibold hover:underline">{post.title}</h2>
+              <p className="mt-2 line-clamp-2 text-sm text-gray-600">{post.content}</p>
+            </Link>
             <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-foreground">{(post.profiles as any)?.username || "익명"}</span>
+                <Link href={`/users/${post.user_id}`} className="font-medium text-foreground hover:underline">
+                  {(post.profiles as any)?.username || "익명"}
+                </Link>
                 <span>•</span>
                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
               </div>
@@ -131,7 +134,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                 </div>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
 

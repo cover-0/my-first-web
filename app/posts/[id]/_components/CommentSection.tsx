@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient } from "@/lib/supabase/client";
@@ -131,12 +132,12 @@ export default function CommentSection({ postId, initialComments }: CommentSecti
         {comments.map((comment) => (
           <div key={comment.id} className="p-4 rounded-lg bg-card border text-card-foreground">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-medium text-sm">
+              <Link href={`/users/${comment.user_id}`} className="font-medium text-sm hover:underline">
                 {/* Supabase 조인 배열/객체 리턴 구조 예외처리 */}
                 {Array.isArray(comment.profiles) 
                   ? comment.profiles[0]?.username 
                   : comment.profiles?.username || "알 수 없음"}
-              </span>
+              </Link>
               <span className="text-xs text-muted-foreground">
                 {new Date(comment.created_at).toLocaleDateString()}
               </span>

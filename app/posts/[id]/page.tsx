@@ -44,7 +44,9 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 			<header className="space-y-2">
 				<h1 className="text-3xl font-semibold">{post.title}</h1>
 				<div className="flex items-center gap-2 text-sm text-muted-foreground">
-					<span className="font-medium text-foreground">{(post.profiles as any)?.username || "익명"}</span>
+					<Link href={`/users/${post.user_id}`} className="font-medium text-foreground hover:underline">
+						{(post.profiles as any)?.username || "익명"}
+					</Link>
 					<span>•</span>
 					<span>{new Date(post.created_at).toLocaleDateString()}</span>
 					<span>•</span>
