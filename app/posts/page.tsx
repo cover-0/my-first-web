@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import SearchInput from "./_components/SearchInput";
 
 export const dynamic = "force-dynamic";
 
@@ -14,15 +15,22 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
   const supabase = createClient();
   const resolvedParams = await searchParams;
   const currentPage = Number(resolvedParams.page) || 1;
+  const query = typeof resolvedParams.q === "string" ? resolvedParams.q : "";
 
   // Supabase의 range() 함수를 위한 시작점과 끝점 계산
   const from = (currentPage - 1) * ITEMS_PER_PAGE;
   const to = from + ITEMS_PER_PAGE - 1;
 
-  // 전체 데이터 개수(count: "exact")와 현재 페이지의 데이터(range)를 함께 가져옵니다.
-  const { data: posts, count, error } = await supabase
+  let supabaseQuery = supabase
     .from("posts")
-    .select("id, title, content, created_at, user_id, view_count, post_likes(count), comments(count), profiles(username)", { count: "exact" })
+    .select("id, title, content, created_at, user_id, view_count, post_likes(count), comments(count), profiles(username)", { count: "exact" });
+
+  if (query) {
+    supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`);
+  }
+
+  // 전체 데이터 개수(count: "exact")와 현재 페이지의 데이터(range)를 함께 가져옵니다.
+  const { data: posts, count, error } = await supabaseQuery
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -35,14 +43,17 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <h1 className="text-2xl font-bold">블로그</h1>
-        <Link
-          href="/posts/new"
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          글쓰기
-        </Link>
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <SearchInput />
+          <Link
+            href="/posts/new"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 whitespace-nowrap"
+          >
+            글쓰기
+          </Link>
+        </div>
       </div>
 
       {!posts || posts.length === 0 ? (
@@ -147,13 +158,13 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
             asChild={currentPage > 1}
           >
             {currentPage > 1 ? (
-              <Link href={`/posts?page=${currentPage - 1}`}>이전</Link>
+              <Link href={`/posts?page=${currentPage - 1}${query ? `&q=${encodeURIComponent(query)}` : ""}`}>이전</Link>
             ) : (
               <span>이전</span>
             )}
           </Button>
           
-          <span className="text-sm font-medium text-gray-600">
+          <span className="text-sm font-medium text-muted-foreground">
             {currentPage} / {totalPages}
           </span>
 
@@ -163,7 +174,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
             asChild={currentPage < totalPages}
           >
             {currentPage < totalPages ? (
-              <Link href={`/posts?page=${currentPage + 1}`}>다음</Link>
+              <Link href={`/posts?page=${currentPage + 1}${query ? `&q=${encodeURIComponent(query)}` : ""}`}>다음</Link>
             ) : (
               <span>다음</span>
             )}

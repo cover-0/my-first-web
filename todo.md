@@ -72,4 +72,15 @@
 - [x] 13.2 전체 프로젝트 코드 리뷰 통과 (보안, 데이터, 미들웨어 점검 완)
 - [x] 13.3 Vercel 환경변수 세팅 및 배포 URL 수동 시나리오 검증
 
-## 진행률: 38/38 (100%)
+## 6단계: 보너스 기능 추가 (G5, G6)
+
+- [x] G6 다크 모드 (next-themes)
+  - [x] `ThemeProvider` 셋업 및 `html` 태그 `suppressHydrationWarning` 적용
+  - [x] `ThemeToggle` 컴포넌트 및 Header.tsx 시맨틱 컬러 리팩토링
+  - [x] `globals.css` 부드러운 다크 그레이 톤(#202124 느낌) 재조정
+- [x] G5 검색 기능
+  - [x] `SearchInput` 클라이언트 컴포넌트 추가
+  - [x] `app/posts/page.tsx`에 `searchParams.q` 활용한 Supabase `.ilike()` 쿼리 적용
+  - [x] 페이지네이션 링크(`/posts?page=2&q=...`)에 검색어 쿼리 유지
+
+## 진행률: 45/45 (100%)

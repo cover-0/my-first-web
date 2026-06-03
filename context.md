@@ -2,8 +2,8 @@
 
 ## 현재 상태
 
-- 마지막 작업일: 2026-05-27
-- 완료된 작업: 홈 페이지, 헤더/푸터 레이아웃, 포스트 목록, 포스트 상세 페이지, 포스트 작성 (CRUD), 페이지 맵 및 아키텍처 설계 보강, shadcn/ui 환경 세팅 완료, **Ch9 Supabase Auth (이메일/비밀번호 인증, 로그인/회원가입/로그아웃, Header 상태 분기, 보호 라우트)**, **Ch11 게시글 RLS 권한 보안 적용**, **마이페이지 (닉네임/실명 수정)**, **댓글 기능 (작성/수정/삭제, RLS)**, **좋아요 기능 (Optimistic UI, RLS)**, **조회수 기능 (RPC, 로컬스토리지 중복 방지)**, **로딩 UX 및 에러 처리 (스켈레톤, 에러 바운더리, 404, Empty State)**
+- 마지막 작업일: 2026-06-03
+- 완료된 작업: 홈 페이지, 헤더/푸터 레이아웃, 포스트 목록, 포스트 상세 페이지, 포스트 작성 (CRUD), 페이지 맵 및 아키텍처 설계 보강, shadcn/ui 환경 세팅 완료, **Ch9 Supabase Auth (이메일/비밀번호 인증, 로그인/회원가입/로그아웃, Header 상태 분기, 보호 라우트)**, **Ch11 게시글 RLS 권한 보안 적용**, **마이페이지 (닉네임/실명 수정)**, **댓글 기능 (작성/수정/삭제, RLS)**, **좋아요 기능 (Optimistic UI, RLS)**, **조회수 기능 (RPC, 로컬스토리지 중복 방지)**, **로딩 UX 및 에러 처리 (스켈레톤, 에러 바운더리, 404, Empty State)**, **다크 모드 적용(G6)**, **검색 기능(G5)**
 - 진행 중: 없음
 - 미착수: 없음
 
@@ -164,3 +164,14 @@
 ### 검증 완료
 - `npm run build` — 빌드 성공 (타입 오류 없음)
 - `git grep` — `service_role`, `next/router`, `auth.signIn(` 미검출 (보안 통과)
+
+## Ch14+ 보너스 기능 (G5, G6) 구현 상태
+
+- **G6 다크 모드 적용**: 
+  - `next-themes` 패키지 설치
+  - `components/ThemeProvider.tsx`, `components/ThemeToggle.tsx` 작성
+  - `app/globals.css`의 다크모드 배경색을 크롬 시크릿 탭 느낌의 부드러운 검정(`oklch(0.245 0.01 255)`)으로 재조정.
+- **G5 검색 기능**:
+  - `app/posts/_components/SearchInput.tsx` 검색 폼 컴포넌트 추가
+  - `app/posts/page.tsx` 내부에서 `searchParams.q`를 통한 Supabase 쿼리(`title` 및 `content` 대상 `.ilike()` 조건) 적용
+  - 다음/이전 페이지 이동 시에도 URL에 검색 쿼리 파라미터가 보존되도록 페이지네이션 보완.
