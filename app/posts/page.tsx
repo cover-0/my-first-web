@@ -43,16 +43,15 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-        <h1 className="text-2xl font-bold">블로그</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-6 animate-in slide-in-from-left-4 duration-500">
+        <h1 className="text-3xl font-extrabold tracking-tight">블로그</h1>
         <div className="flex items-center gap-4 w-full sm:w-auto">
           <SearchInput />
-          <Link
-            href="/posts/new"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 whitespace-nowrap"
-          >
-            글쓰기
-          </Link>
+          <Button asChild className="rounded-full shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5">
+            <Link href="/posts/new">
+              글쓰기
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -81,12 +80,11 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
               당신만의 흥미로운 이야기나 유익한 웹 개발 학습 기록을 여기에 첫 발자국으로 남겨보세요!
             </p>
           </div>
-          <Link
-            href="/posts/new"
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
-          >
-            첫 글 작성하기
-          </Link>
+          <Button asChild size="lg" className="rounded-full shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 mt-4">
+            <Link href="/posts/new">
+              첫 글 작성하기
+            </Link>
+          </Button>
         </div>
       ) : (
         <>
@@ -94,26 +92,26 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
         {posts.map((post) => (
           <div
             key={post.id}
-            className="flex flex-col rounded-lg border border-gray-200 p-6 shadow-sm transition hover:shadow-md bg-card text-card-foreground"
+            className="group flex flex-col rounded-2xl border border-border/40 p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-card/40 backdrop-blur-md text-card-foreground hover:border-primary/30"
           >
             <Link href={`/posts/${post.id}`} className="block flex-grow">
-              <h2 className="text-lg font-semibold hover:underline">{post.title}</h2>
-              <p className="mt-2 line-clamp-2 text-sm text-gray-600">{post.content}</p>
+              <h2 className="text-xl font-bold group-hover:text-primary transition-colors">{post.title}</h2>
+              <p className="mt-3 line-clamp-2 text-sm text-muted-foreground leading-relaxed">{post.content}</p>
             </Link>
-            <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+            <div className="mt-6 flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Link href={`/users/${post.user_id}`} className="font-medium text-foreground hover:underline">
+                <Link href={`/users/${post.user_id}`} className="font-medium text-foreground hover:text-primary transition-colors">
                   {(post.profiles as any)?.username || "익명"}
                 </Link>
-                <span>•</span>
+                <span className="opacity-50">•</span>
                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 text-green-500"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                  <span>{post.view_count || 0}</span>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5 transition-colors group-hover:text-foreground">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-emerald-500"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span className="font-medium">{post.view_count || 0}</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 transition-colors group-hover:text-foreground">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -122,13 +120,13 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-3.5 w-3.5 text-red-500"
+                    className="h-4 w-4 text-rose-500"
                   >
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                   </svg>
-                  <span>{post.post_likes?.[0]?.count || 0}</span>
+                  <span className="font-medium">{post.post_likes?.[0]?.count || 0}</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5 transition-colors group-hover:text-foreground">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -137,11 +135,11 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-3.5 w-3.5 text-blue-500"
+                    className="h-4 w-4 text-sky-500"
                   >
                     <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
                   </svg>
-                  <span>{post.comments?.[0]?.count || 0}</span>
+                  <span className="font-medium">{post.comments?.[0]?.count || 0}</span>
                 </div>
               </div>
             </div>

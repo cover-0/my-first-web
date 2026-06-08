@@ -16,7 +16,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="w-9 h-9 text-gray-200 hover:text-white hover:bg-gray-700 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent">
+      <Button variant="ghost" size="icon" className="w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent dark:hover:bg-accent transition-colors">
         <span className="sr-only">테마 변경</span>
       </Button>
     );
@@ -26,7 +26,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      className="w-9 h-9 text-gray-200 hover:text-white hover:bg-gray-700 dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-accent"
+      className="w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent dark:hover:bg-accent transition-colors"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {theme === "dark" ? (
