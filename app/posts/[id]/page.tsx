@@ -6,6 +6,7 @@ import PostActions from "./_components/PostActions";
 import LikeButton from "./_components/LikeButton";
 import CommentSection from "./_components/CommentSection";
 import ViewCounter from "./_components/ViewCounter";
+import { UserAvatar } from "@/components/UserAvatar";
 
 type PostDetailPageProps = {
 	params: Promise<{ id: string }>;
@@ -17,7 +18,7 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 
 	const { data: post, error } = await supabase
 		.from("posts")
-		.select("id, title, content, created_at, user_id, view_count, profiles(username)")
+		.select("id, title, content, created_at, user_id, view_count, profiles(username, avatar_url)")
 		.eq("id", id)
 		.single();
 
@@ -44,8 +45,15 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 			<header className="space-y-2">
 				<h1 className="text-3xl font-semibold">{post.title}</h1>
 				<div className="flex items-center gap-2 text-sm text-muted-foreground">
-					<Link href={`/users/${post.user_id}`} className="font-medium text-foreground hover:underline">
-						{(post.profiles as any)?.username || "익명"}
+					<Link href={`/users/${post.user_id}`} className="flex items-center gap-2 group/author">
+						<UserAvatar 
+							avatarUrl={(post.profiles as any)?.avatar_url} 
+							username={(post.profiles as any)?.username} 
+							className="h-5 w-5 transition-transform group-hover/author:scale-110" 
+						/>
+						<span className="font-medium text-foreground group-hover/author:underline transition-colors">
+							{(post.profiles as any)?.username || "익명"}
+						</span>
 					</Link>
 					<span>•</span>
 					<span>{new Date(post.created_at).toLocaleDateString()}</span>

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import EditProfileButton from "./_components/EditProfileButton";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +44,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
         posts (
           id, title, content, created_at, user_id, view_count,
           post_likes(count), comments(count),
-          profiles (username)
+          profiles (username, avatar_url)
         )
       `)
       .eq("user_id", userId)
@@ -66,7 +68,7 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
     // Default: 'posts'
     const { data } = await supabase
       .from("posts")
-      .select("id, title, content, created_at, user_id, view_count, post_likes(count), comments(count), profiles(username)")
+      .select("id, title, content, created_at, user_id, view_count, post_likes(count), comments(count), profiles(username, avatar_url)")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
       
@@ -94,8 +96,15 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
             </Link>
             <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
               <div className="flex items-center gap-2">
-                <Link href={`/users/${post.user_id}`} className="font-medium text-foreground hover:underline">
-                  {Array.isArray(post.profiles) ? post.profiles[0]?.username : post.profiles?.username || "익명"}
+                <Link href={`/users/${post.user_id}`} className="flex items-center gap-2 group/author">
+                  <UserAvatar 
+                    avatarUrl={Array.isArray(post.profiles) ? post.profiles[0]?.avatar_url : post.profiles?.avatar_url}
+                    username={Array.isArray(post.profiles) ? post.profiles[0]?.username : post.profiles?.username}
+                    className="h-5 w-5 transition-transform group-hover/author:scale-110"
+                  />
+                  <span className="font-medium text-foreground group-hover/author:underline transition-colors">
+                    {Array.isArray(post.profiles) ? post.profiles[0]?.username : post.profiles?.username || "익명"}
+                  </span>
                 </Link>
                 <span>•</span>
                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
@@ -125,9 +134,32 @@ export default async function UserProfilePage({ params, searchParams }: UserProf
     <section className="space-y-8 max-w-4xl mx-auto">
       {/* Profile Card */}
       <div className="bg-card border rounded-lg p-8 shadow-sm flex flex-col items-center text-center">
-        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center text-primary text-3xl font-bold mb-4">
-          {profile.username ? profile.username.charAt(0).toUpperCase() : "U"}
-        </div>
+        {profile.avatar_url ? (
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-transform hover:scale-105">
+                <UserAvatar 
+                  avatarUrl={profile.avatar_url} 
+                  username={profile.username} 
+                  className="w-24 h-24 mb-4 text-muted-foreground cursor-pointer" 
+                />
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md flex flex-col items-center justify-center bg-transparent border-none shadow-none">
+              <img 
+                src={profile.avatar_url} 
+                alt={`${profile.username} 확대된 아바타`} 
+                className="w-full h-auto max-h-[80vh] object-contain rounded-xl shadow-2xl"
+              />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <UserAvatar 
+            avatarUrl={null} 
+            username={profile.username} 
+            className="w-24 h-24 mb-4 text-muted-foreground" 
+          />
+        )}
         <h1 className="text-2xl font-bold text-card-foreground">
           {profile.username || "익명 사용자"}
         </h1>

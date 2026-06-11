@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import SearchInput from "./_components/SearchInput";
+import { UserAvatar } from "@/components/UserAvatar";
 
 export const dynamic = "force-dynamic";
 
@@ -21,9 +22,9 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
   const from = (currentPage - 1) * ITEMS_PER_PAGE;
   const to = from + ITEMS_PER_PAGE - 1;
 
-  let supabaseQuery = supabase
+    let supabaseQuery = supabase
     .from("posts")
-    .select("id, title, content, created_at, user_id, view_count, post_likes(count), comments(count), profiles(username)", { count: "exact" });
+    .select("id, title, content, created_at, user_id, view_count, post_likes(count), comments(count), profiles(username, avatar_url)", { count: "exact" });
 
   if (query) {
     supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`);
@@ -100,8 +101,15 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
             </Link>
             <div className="mt-6 flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Link href={`/users/${post.user_id}`} className="font-medium text-foreground hover:text-primary transition-colors">
-                  {(post.profiles as any)?.username || "익명"}
+                <Link href={`/users/${post.user_id}`} className="flex items-center gap-2 group/author">
+                  <UserAvatar 
+                    avatarUrl={(post.profiles as any)?.avatar_url} 
+                    username={(post.profiles as any)?.username} 
+                    className="h-5 w-5 transition-transform group-hover/author:scale-110" 
+                  />
+                  <span className="font-medium text-foreground group-hover/author:text-primary transition-colors">
+                    {(post.profiles as any)?.username || "익명"}
+                  </span>
                 </Link>
                 <span className="opacity-50">•</span>
                 <span>{new Date(post.created_at).toLocaleDateString()}</span>

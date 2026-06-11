@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AvatarUpload } from "./_components/AvatarUpload";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
@@ -14,6 +15,7 @@ export default function ProfilePage() {
 
   const [username, setUsername] = useState("");
   const [fullName, setFullName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -30,13 +32,14 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("username, full_name")
+        .select("username, full_name, avatar_url")
         .eq("id", user.id)
         .single();
 
       if (!error && data) {
         setUsername(data.username || "");
         setFullName(data.full_name || "");
+        setAvatarUrl(data.avatar_url || null);
       }
       setIsFetching(false);
     };
@@ -54,7 +57,8 @@ export default function ProfilePage() {
         .from("profiles")
         .update({ 
           username: username.trim(),
-          full_name: fullName.trim()
+          full_name: fullName.trim(),
+          avatar_url: avatarUrl
         })
         .eq("id", user.id);
 
@@ -78,6 +82,14 @@ export default function ProfilePage() {
       <h1 className="text-2xl font-bold mb-6">마이페이지</h1>
       
       <form onSubmit={handleUpdateProfile} className="space-y-6">
+        <div className="flex justify-center mb-6">
+          <AvatarUpload 
+            avatarUrl={avatarUrl} 
+            username={username} 
+            onUploadSuccess={(url) => setAvatarUrl(url)} 
+          />
+        </div>
+
         <div>
           <label htmlFor="email" className="block text-sm font-medium mb-2">
             이메일 (변경 불가)

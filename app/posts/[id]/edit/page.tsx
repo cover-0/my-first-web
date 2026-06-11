@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUploadButton } from "../_components/ImageUploadButton";
 
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { user, loading: authLoading } = useAuth();
@@ -125,9 +126,15 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="content" className="text-sm font-medium text-foreground">
-                내용
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="content" className="text-sm font-medium text-foreground">
+                  내용
+                </label>
+                <ImageUploadButton
+                  disabled={isSubmitting}
+                  onUploadSuccess={(url) => setContent((prev) => prev + `\n![image](${url})\n`)}
+                />
+              </div>
               <Textarea
                 id="content"
                 value={content}
