@@ -17,7 +17,8 @@
 - /posts/[id]/edit : 글 수정
 - /login : 로그인
 - /signup : 회원가입
-- /mypage : 마이페이지
+- /profile : 마이페이지 (내 정보 수정)
+- /users/[id] : 유저 프로필 조회
 
 ## 3. 유저 플로우
 
@@ -55,11 +56,11 @@
 - `middleware.ts`에서 `@supabase/ssr`의 `createServerClient`로 전역 보호
 - 삭제/수정 버튼은 `PostActions.tsx`에서 클라이언트단 상태 (`user.id === post.user_id`) 조건부 렌더링으로 UX 보호 처리
 
-### 3.6 마이페이지 (미구현)
+### 3.6 마이페이지 및 프로필
 
-1) 사용자가 /mypage로 이동
-2) 내 정보 및 내 글 목록 확인
-3) 필요 시 글 수정/삭제로 이동
+1) 로그인한 사용자가 `/profile` 로 이동해 자신의 정보(아바타, 닉네임 등)를 업로드 및 수정 (`AvatarUpload` 연동)
+2) 다른 사용자의 프로필은 `/users/[id]` 경로를 통해 확인
+3) 필요 시 내 프로필에서 작성한 글 관리로 이동
 
 ## Tech Stack
 

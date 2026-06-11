@@ -83,4 +83,12 @@
   - [x] `app/posts/page.tsx`에 `searchParams.q` 활용한 Supabase `.ilike()` 쿼리 적용
   - [x] 페이지네이션 링크(`/posts?page=2&q=...`)에 검색어 쿼리 유지
 
-## 진행률: 45/45 (100%)
+## 7단계: 스토리지(Storage) 및 이미지 업로드 기능 고도화
+
+- [x] Supabase Storage 버킷 마이그레이션 생성 (`post_images`, `avatars`)
+- [x] 게시물 작성/수정 시 이미지 업로드 기능 (`ImageUploadButton` 추가 및 연동)
+- [x] 프로필 아바타 이미지 업로드 및 관리 기능 (`AvatarUpload` 추가)
+- [x] 기본 레이아웃 내 사용자 프로필 이미지 UI 처리 (`UserAvatar` 컴포넌트)
+- [x] 게시물 상세 페이지 및 댓글 영역에 프로필/게시물 이미지 렌더링 적용
+
+## 진행률: 50/50 (100%)
